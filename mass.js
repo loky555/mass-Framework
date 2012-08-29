@@ -487,8 +487,12 @@
     }
 
     function install( id, deps, callback ){
-        for ( var i = 0, array = [], d; d = deps[i++]; ) {
-            array.push( modules[ d ].exports );//从returns对象取得依赖列表中的各模块的返回值
+        try{
+            for ( var i = 0, array = [], d; d = deps[i++]; ) {
+                array.push( modules[ d ].exports );//从returns对象取得依赖列表中的各模块的返回值
+            }
+        }catch(e){
+            $.log(d+" 路径错误", 3)
         }
         var module = Object( modules[id] ), ret;
         var common = {
@@ -506,8 +510,8 @@
             ret =  callback.apply(global, array);
         }
         module.state = 2;
-        if( ret !== void 0 ){
-            modules[ id ].exports = ret
+        if(typeof ret !== "undefined" && d){
+            modules[ d ].exports = ret
         }
         return ret;
     }
